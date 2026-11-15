@@ -344,6 +344,37 @@ html {
   .cost-row { align-items: flex-start; flex-direction: column; gap: 5px; }
 }
 
+/* Consent control: a clear, touch-friendly switch instead of a browser-default checkbox. */
+.consent-field {
+  position: relative;
+  display: flex !important;
+  align-items: center;
+  gap: 14px;
+  min-height: 68px;
+  margin-top: 22px !important;
+  padding: 14px 16px;
+  border: 1px solid var(--reach-line-strong);
+  border-radius: var(--reach-radius-sm);
+  background: #17131d;
+  color: var(--reach-white) !important;
+  cursor: pointer;
+  transition: border-color .18s ease, background .18s ease, box-shadow .18s ease;
+}
+.consent-field:hover { border-color: var(--reach-purple); background: #1d1726; }
+.consent-field:focus-within { border-color: var(--reach-purple); box-shadow: 0 0 0 3px rgba(168,85,247,.15); }
+.consent-checkbox { position: absolute; width: 1px !important; height: 1px !important; margin: -1px !important; padding: 0 !important; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.consent-switch { flex: 0 0 auto; display: grid; place-items: center; width: 42px; height: 24px; padding: 3px; border-radius: 999px; background: #39303f; transition: background .18s ease; }
+.consent-switch span { display: block; width: 18px; height: 18px; margin-right: 18px; border-radius: 50%; background: #a59aaa; box-shadow: 0 2px 5px rgba(0,0,0,.28); transition: transform .18s ease, background .18s ease; }
+.consent-checkbox:checked + .consent-switch { background: var(--reach-purple); }
+.consent-checkbox:checked + .consent-switch span { transform: translateX(18px); background: #fff; }
+.consent-copy { display: grid; gap: 3px; min-width: 0; }
+.consent-copy strong { color: var(--reach-white); font-size: 13px; font-weight: 600; }
+.consent-copy small { color: var(--reach-muted); font-size: 11px; line-height: 1.4; }
+@media (max-width: 520px) {
+  .consent-field { align-items: flex-start; padding: 13px; }
+  .consent-copy small { max-width: 230px; }
+}
+
 /* Workflow screens replace the old centered modal presentation. Authentication
    remains a modal; signed-in campaign/contact/billing/sender flows occupy the
    workspace as navigable screens instead. */
