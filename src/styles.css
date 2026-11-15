@@ -854,6 +854,16 @@ select:focus-visible { outline-color: var(--reach-purple); }
 .form-error { color: #ff4d67 !important; background: transparent !important; border: 0 !important; border-radius: 0 !important; padding: 0 !important; box-shadow: none !important; }
 @media (max-width: 700px) { .workspace-screen-layer { min-height: calc(100vh - 66px); padding: 26px 16px 56px; }.workspace-screen-layer .dark-modal { width: 100%; padding: 0; }.workspace-screen-layer .modal-close { top: -8px; right: -4px; } }
 .workspace-flow-view { width: min(100%, 960px); margin: 0 auto; }
+.dashboard-contact-summary { display: inline-flex; align-items: center; gap: 8px; margin: -12px 0 14px auto; padding: 8px 11px; border: 1px solid var(--reach-line); border-radius: var(--reach-radius-sm); color: var(--reach-muted); font-size: 12px; }
+.dashboard-contact-summary svg { color: var(--reach-purple-bright); }.dashboard-contact-summary strong { color: var(--reach-white); }
+.contact-picker { display: grid; gap: 8px; margin-top: 12px; }
+.contact-picker-row { display: flex !important; align-items: center; gap: 10px; margin: 0 !important; padding: 12px; border: 1px solid var(--reach-line); border-radius: var(--reach-radius-sm); background: var(--reach-panel); cursor: pointer; }
+.contact-picker-row:hover { border-color: var(--reach-purple); background: #21192c; }.contact-picker-row input { flex: 0 0 auto; width: 16px !important; height: 16px; margin: 0 !important; accent-color: var(--reach-purple); }.contact-picker-row span { min-width: 0; }.contact-picker-row strong, .contact-picker-row small { display: block; }.contact-picker-row strong { color: var(--reach-white); font-size: 12px; }.contact-picker-row small { margin-top: 3px; color: var(--reach-muted); font-size: 11px; }.field-hint { display: block; margin-top: 6px; color: var(--reach-muted); font-size: 11px; font-weight: 400; }
+.recipient-tabs button:disabled { cursor: not-allowed; opacity: .45; }
+.workspace-page { padding-top: 24px !important; }
+.workspace-page > .dashboard-view > .dashboard-contact-summary + .page-title-row { margin-top: 0; }
+.page-title-row { margin-bottom: 20px; }
+@media (max-width: 700px) { .workspace-page { padding-top: 16px !important; }.dashboard-contact-summary { margin-top: -4px; margin-bottom: 12px; } }
 .notifications-wrap { position: relative; }
 .notification-trigger { position: relative; }
 .notification-dot { position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; border: 2px solid var(--reach-ink); border-radius: 50%; background: #ff6680; }
