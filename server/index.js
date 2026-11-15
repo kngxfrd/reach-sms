@@ -66,7 +66,6 @@ const addPlan = db.prepare('INSERT OR IGNORE INTO plans (id, name, credits, pric
 
 const json = (res, status, payload) => { res.writeHead(status, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'Content-Type, Authorization', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS' }); res.end(JSON.stringify(payload)); };
 const now = () => new Date().toISOString();
-const smsSegments = (message) => Math.max(1, Math.ceil(String(message || '').length / 160));
 const normalizeSenderStatus = (status) => {
   const value = String(status || 'pending').toLowerCase();
   return value === 'approved' || value === 'active' ? 'active' : value === 'rejected' ? 'rejected' : 'pending';
@@ -101,11 +100,11 @@ const sendViaSailup = async ({ recipients, message, senderId }) => {
   return payload;
 };
 const processScheduledCampaigns = async () => {
-  const due = db.prepare("SELECT id, user_id as userId, message, recipients, credits_used as creditsUsed, recipient_numbers as recipientNumbers, sender_id as senderId FROM campaigns WHERE status = 'Scheduled' AND scheduled_for IS NOT NULL AND scheduled_for <= ? ORDER BY id LIMIT 10").all(now());
+  const due = db.prepare("SELECT id, user_id as userId, message, recipients, recipient_numbers as recipientNumbers, sender_id as senderId FROM campaigns WHERE status = 'Scheduled' AND scheduled_for IS NOT NULL AND scheduled_for <= ? ORDER BY id LIMIT 10").all(now());
   for (const campaign of due) {
     const numbers = JSON.parse(campaign.recipientNumbers || '[]');
     const sender = db.prepare("SELECT name FROM sender_submissions WHERE id = ? AND user_id = ? AND status IN ('active', 'approved')").get(campaign.senderId, campaign.userId);
-    if (!sender) { db.prepare('UPDATE campaigns SET status = ? WHERE id = ?').run('Failed', campaign.id); db.prepare('UPDATE wallets SET credits = credits + ?, updated_at = ? WHERE user_id = ?').run(campaign.creditsUsed, now(), campaign.userId); continue; }
+    if (!sender) { db.prepare('UPDATE campaigns SET status = ? WHERE id = ?').run('Failed', campaign.id); db.prepare('UPDATE wallets SET credits = credits + ?, updated_at = ? WHERE user_id = ?').run(campaign.recipients, now(), campaign.userId); continue; }
     db.prepare('UPDATE campaigns SET status = ? WHERE id = ?').run('Sending', campaign.id);
     try {
       const response = await sendViaSailup({ recipients: numbers, message: campaign.message, senderId: sender.name });
@@ -113,7 +112,7 @@ const processScheduledCampaigns = async () => {
       db.prepare('UPDATE campaigns SET status = ?, provider_message_ids = ? WHERE id = ?').run('Queued', JSON.stringify(ids), campaign.id);
     } catch {
       db.prepare('UPDATE campaigns SET status = ? WHERE id = ?').run('Failed', campaign.id);
-      db.prepare('UPDATE wallets SET credits = credits + ?, updated_at = ? WHERE user_id = ?').run(campaign.creditsUsed, now(), campaign.userId);
+      db.prepare('UPDATE wallets SET credits = credits + ?, updated_at = ? WHERE user_id = ?').run(campaign.recipients, now(), campaign.userId);
     }
   }
 };
@@ -314,36 +313,35 @@ async function route(req, res) {
     if (req.method === 'POST' && url.pathname === '/api/campaigns') {
       const { name, audience, message, recipients, recipientNumbers = [], senderId, scheduledFor = null } = await body(req);
       const count = Number(recipients);
-      const creditsRequired = count * smsSegments(message);
       if (!name || !message || !Number.isInteger(count) || count < 1) return json(res, 400, { error: 'Campaign name, message, and a valid recipient count are required.' });
       if (!Array.isArray(recipientNumbers) || recipientNumbers.length !== count) return json(res, 400, { error: 'Recipient numbers must match the recipient count.' });
       const activeSender = senderId ? db.prepare("SELECT name FROM sender_submissions WHERE user_id = ? AND id = ? AND status IN ('active', 'approved')").get(user.id, Number(senderId)) : db.prepare("SELECT name FROM sender_submissions WHERE user_id = ? AND status IN ('active', 'approved') ORDER BY id DESC LIMIT 1").get(user.id);
       if (!activeSender) return json(res, 409, { error: 'Register a sender ID and wait for Sailup approval before sending campaigns.' });
       const current = wallet(user.id);
-      if (current.credits < creditsRequired) return json(res, 402, { error: `You need ${creditsRequired} credits but only have ${current.credits}.` });
+      if (current.credits < count) return json(res, 402, { error: `You need ${count} credits but only have ${current.credits}.` });
       const timestamp = now();
       let campaignId;
       db.exec('BEGIN IMMEDIATE');
       try {
-        const debit = db.prepare('UPDATE wallets SET credits = credits - ?, updated_at = ? WHERE user_id = ? AND credits >= ?').run(creditsRequired, timestamp, user.id, creditsRequired);
-        if (debit.changes !== 1) { db.exec('ROLLBACK'); return json(res, 402, { error: `You need ${creditsRequired} credits but only have ${wallet(user.id).credits}.` }); }
+        const debit = db.prepare('UPDATE wallets SET credits = credits - ?, updated_at = ? WHERE user_id = ? AND credits >= ?').run(count, timestamp, user.id, count);
+        if (debit.changes !== 1) { db.exec('ROLLBACK'); return json(res, 402, { error: `You need ${count} credits but only have ${wallet(user.id).credits}.` }); }
         const isScheduled = scheduledFor && new Date(scheduledFor).getTime() > Date.now();
-        const created = db.prepare('INSERT INTO campaigns (user_id, name, audience, message, recipients, recipient_numbers, credits_used, status, provider, scheduled_for, sender_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)').run(user.id, name, audience || 'Contacts', message, count, JSON.stringify(recipientNumbers), creditsRequired, isScheduled ? 'Scheduled' : 'Sending', 'sailup', isScheduled ? new Date(scheduledFor).toISOString() : null, Number(senderId), timestamp);
+        const created = db.prepare('INSERT INTO campaigns (user_id, name, audience, message, recipients, recipient_numbers, credits_used, status, provider, scheduled_for, sender_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)').run(user.id, name, audience || 'Contacts', message, count, JSON.stringify(recipientNumbers), count, isScheduled ? 'Scheduled' : 'Sending', 'sailup', isScheduled ? new Date(scheduledFor).toISOString() : null, Number(senderId), timestamp);
         campaignId = Number(created.lastInsertRowid);
         db.exec('COMMIT');
       } catch (error) { db.exec('ROLLBACK'); throw error; }
-      if (scheduledFor && new Date(scheduledFor).getTime() > Date.now()) return json(res, 201, { wallet: wallet(user.id), campaign: { id: campaignId, name, audience, recipients: count, creditsUsed: creditsRequired, status: 'Scheduled', scheduledFor: new Date(scheduledFor).toISOString(), provider: 'sailup' } });
+      if (scheduledFor && new Date(scheduledFor).getTime() > Date.now()) return json(res, 201, { wallet: wallet(user.id), campaign: { id: campaignId, name, audience, recipients: count, creditsUsed: count, status: 'Scheduled', scheduledFor: new Date(scheduledFor).toISOString(), provider: 'sailup' } });
       let providerResponse;
       try {
         providerResponse = await sendViaSailup({ recipients: recipientNumbers, message, senderId: activeSender.name });
       } catch (error) {
         db.exec('BEGIN IMMEDIATE');
-        try { db.prepare('UPDATE wallets SET credits = credits + ?, updated_at = ? WHERE user_id = ?').run(creditsRequired, now(), user.id); db.prepare('UPDATE campaigns SET status = ? WHERE id = ? AND user_id = ?').run('Failed', campaignId, user.id); db.exec('COMMIT'); } catch (refundError) { db.exec('ROLLBACK'); throw refundError; }
+        try { db.prepare('UPDATE wallets SET credits = credits + ?, updated_at = ? WHERE user_id = ?').run(count, now(), user.id); db.prepare('UPDATE campaigns SET status = ? WHERE id = ? AND user_id = ?').run('Failed', campaignId, user.id); db.exec('COMMIT'); } catch (refundError) { db.exec('ROLLBACK'); throw refundError; }
         return json(res, 502, { error: `SMS was not accepted by Sailup: ${error.message}` });
       }
       const providerMessageIds = Array.isArray(providerResponse.messages) ? providerResponse.messages.map((item) => item.id).filter(Boolean) : [];
       db.prepare('UPDATE campaigns SET status = ?, provider_message_ids = ? WHERE id = ? AND user_id = ?').run('Queued', JSON.stringify(providerMessageIds), campaignId, user.id);
-      return json(res, 201, { wallet: wallet(user.id), campaign: { id: campaignId, name, audience, recipients: count, creditsUsed: creditsRequired, status: 'Queued', provider: 'sailup', providerMessageIds } });
+      return json(res, 201, { wallet: wallet(user.id), campaign: { id: campaignId, name, audience, recipients: count, creditsUsed: count, status: 'Queued', provider: 'sailup', providerMessageIds } });
     }
     return json(res, 404, { error: 'Not found' });
   } catch (error) { return json(res, 500, { error: error.message }); }

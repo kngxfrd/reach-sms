@@ -4,7 +4,3 @@ node_modules/
 data/*.sqlite
 data/*.sqlite-shm
 data/*.sqlite-wal
-.venv/
-__pycache__/
-*.py[cod]
-data/*.sqlite3

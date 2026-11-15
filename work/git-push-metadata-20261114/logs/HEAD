@@ -11,3 +11,5 @@ bc54781da000d9d35454e42b4a17a1a3088de750 8c772ae066e3d4eac35fdadd48faf716c45346f
 8c772ae066e3d4eac35fdadd48faf716c45346fa 5499542db460fc9f48474f82af975f6e13cfc260 kngxfrd <amekudzikingsford014@gmail.com> 1794757746 +0000	commit: Install Django dependencies during Vercel build
 5499542db460fc9f48474f82af975f6e13cfc260 a912a3f1906a4f206b9cdcb752de48dda13216d7 kngxfrd <amekudzikingsford014@gmail.com> 1794757963 +0000	commit: Use uv for Vercel Python dependencies
 a912a3f1906a4f206b9cdcb752de48dda13216d7 81c278aac25612bc4adb0c0b7a5a707ddf28cff4 kngxfrd <amekudzikingsford014@gmail.com> 1794758845 +0000	commit: Fix Vercel Python dependency resolution
+81c278aac25612bc4adb0c0b7a5a707ddf28cff4 7480eaab04a75322e704e65c3b4a756d19b826e2 kngxfrd <amekudzikingsford014@gmail.com> 1794759492 +0000	commit: Revert Django and Vercel backend migration
+7480eaab04a75322e704e65c3b4a756d19b826e2 51ffd56af44b1f7ca4b1aef77a26a5e48c424177 kngxfrd <amekudzikingsford014@gmail.com> 1794759581 +0000	commit: Refresh built frontend bundle
