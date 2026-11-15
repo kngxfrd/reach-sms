@@ -847,6 +847,8 @@ img, video, canvas { max-width: 100%; height: auto; }
 .workspace-screen-layer select { color-scheme: dark; accent-color: var(--reach-purple); }
 .workspace-screen-layer select option { color: var(--reach-white); background: var(--reach-panel); }
 select:focus-visible { outline-color: var(--reach-purple); }
+.workspace select, .workspace select option { accent-color: var(--reach-purple); }
+.workspace select { color-scheme: dark; }
 @media (max-width: 700px) { .workspace-screen-layer { min-height: calc(100vh - 66px); padding: 26px 16px 56px; }.workspace-screen-layer .dark-modal { width: 100%; padding: 0; }.workspace-screen-layer .modal-close { top: -8px; right: -4px; } }
 
 /* Authentication is a dedicated screen, not a stacked dialog. */
