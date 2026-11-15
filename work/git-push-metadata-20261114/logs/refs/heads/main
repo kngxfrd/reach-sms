@@ -17,3 +17,4 @@ a912a3f1906a4f206b9cdcb752de48dda13216d7 81c278aac25612bc4adb0c0b7a5a707ddf28cff
 c26c3caebb5a99643a17001b6fd18ca85e75894a 42ed3a35d9e020032d711b162716d22b13d5ff2d kngxfrd <amekudzikingsford014@gmail.com> 1794760949 +0000	commit: Keep workspace flows navigable without modal cards
 42ed3a35d9e020032d711b162716d22b13d5ff2d b6651f84c3f6f80c767a527205610e58ac5a4615 kngxfrd <amekudzikingsford014@gmail.com> 1794761426 +0000	commit: Render workspace flows as navigable screens
 b6651f84c3f6f80c767a527205610e58ac5a4615 4e4aa2406380f8e5a2d1e2153563aea544183db1 kngxfrd <amekudzikingsford014@gmail.com> 1794761866 +0000	commit: Restore page scrolling and simplify errors
+4e4aa2406380f8e5a2d1e2153563aea544183db1 d3ba1e1102eb7d98c5ee09556e570798ddadfdcc kngxfrd <amekudzikingsford014@gmail.com> 1794762767 +0000	commit: Make send flows full workspace views

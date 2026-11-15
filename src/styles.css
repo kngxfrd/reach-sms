@@ -853,6 +853,19 @@ select:focus-visible { outline-color: var(--reach-purple); }
 .workspace { overflow: visible; }
 .form-error { color: #ff4d67 !important; background: transparent !important; border: 0 !important; border-radius: 0 !important; padding: 0 !important; box-shadow: none !important; }
 @media (max-width: 700px) { .workspace-screen-layer { min-height: calc(100vh - 66px); padding: 26px 16px 56px; }.workspace-screen-layer .dark-modal { width: 100%; padding: 0; }.workspace-screen-layer .modal-close { top: -8px; right: -4px; } }
+.workspace-flow-view { width: min(100%, 960px); margin: 0 auto; }
+.flow-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; padding-bottom: 30px; border-bottom: 1px solid var(--reach-line); }
+.flow-header h1 { margin: 7px 0 8px; color: var(--reach-white); font-family: "Space Grotesk", Inter, sans-serif; font-size: clamp(30px, 4vw, 44px); letter-spacing: -1.5px; }
+.flow-header p:not(.eyebrow), .flow-helper { color: var(--reach-muted); font-size: 13px; line-height: 1.6; margin: 0; }
+.workspace-flow-form { max-width: 760px; padding: 30px 0 12px; }
+.workspace-flow-form label { display: block; margin-top: 20px; color: var(--reach-soft); font-size: 12px; font-weight: 600; }
+.workspace-flow-form input, .workspace-flow-form select, .workspace-flow-form textarea { display: block; width: 100%; margin-top: 8px; padding: 13px 14px; border: 1px solid var(--reach-line-strong); border-radius: var(--reach-radius-sm); background: #120f18; color: var(--reach-white); outline: 0; font-size: 13px; }
+.workspace-flow-form input:focus, .workspace-flow-form select:focus, .workspace-flow-form textarea:focus { border-color: var(--reach-purple); box-shadow: 0 0 0 3px rgba(168,85,247,.16); }
+.workspace-flow-form textarea { min-height: 130px; resize: vertical; }
+.workspace-flow-form .flow-helper + label { margin-top: 24px; }
+.flow-actions { display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 30px; padding-top: 22px; border-top: 1px solid var(--reach-line); }
+.flow-actions .green-button { min-width: 170px; }
+@media (max-width: 700px) { .flow-header { align-items: stretch; flex-direction: column; gap: 18px; }.flow-header .outline-button { align-self: flex-start; }.workspace-flow-form { padding-top: 24px; }.flow-actions { align-items: stretch; flex-direction: column; }.flow-actions > * { width: 100%; justify-content: center; } }
 
 /* Authentication is a dedicated screen, not a stacked dialog. */
 .auth-screen { position: fixed; inset: 0; z-index: 20; overflow-y: auto; background: #131514; color: #edf2ee; }
