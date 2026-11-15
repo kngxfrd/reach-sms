@@ -14,3 +14,4 @@ a912a3f1906a4f206b9cdcb752de48dda13216d7 81c278aac25612bc4adb0c0b7a5a707ddf28cff
 81c278aac25612bc4adb0c0b7a5a707ddf28cff4 7480eaab04a75322e704e65c3b4a756d19b826e2 kngxfrd <amekudzikingsford014@gmail.com> 1794759492 +0000	commit: Revert Django and Vercel backend migration
 7480eaab04a75322e704e65c3b4a756d19b826e2 51ffd56af44b1f7ca4b1aef77a26a5e48c424177 kngxfrd <amekudzikingsford014@gmail.com> 1794759581 +0000	commit: Refresh built frontend bundle
 51ffd56af44b1f7ca4b1aef77a26a5e48c424177 c26c3caebb5a99643a17001b6fd18ca85e75894a kngxfrd <amekudzikingsford014@gmail.com> 1794760293 +0000	commit: Make authentication a switchable screen
+c26c3caebb5a99643a17001b6fd18ca85e75894a 42ed3a35d9e020032d711b162716d22b13d5ff2d kngxfrd <amekudzikingsford014@gmail.com> 1794760949 +0000	commit: Keep workspace flows navigable without modal cards

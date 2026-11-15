@@ -839,6 +839,16 @@ img, video, canvas { max-width: 100%; height: auto; }
 .workspace-sidebar .brand > .sidebar-brand-dot { order: 3; }
 .workspace-sidebar .brand > .mobile-nav-close { order: 4; }
 
+/* Workspace flows stay inside the main column so navigation remains available. */
+.workspace-screen-layer { position: relative; inset: auto; z-index: 1; min-height: calc(100vh - 90px); overflow: visible; padding: 42px clamp(18px, 5vw, 84px) 72px; background: var(--reach-ink); }
+.workspace-screen-layer .dark-modal { width: min(100%, 960px); max-height: none; margin: 0 auto; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.workspace-screen-layer .dark-modal h2 { max-width: 760px; }
+.workspace-screen-layer .modal-close { top: 0; right: 0; }
+.workspace-screen-layer select { color-scheme: dark; accent-color: var(--reach-purple); }
+.workspace-screen-layer select option { color: var(--reach-white); background: var(--reach-panel); }
+select:focus-visible { outline-color: var(--reach-purple); }
+@media (max-width: 700px) { .workspace-screen-layer { min-height: calc(100vh - 66px); padding: 26px 16px 56px; }.workspace-screen-layer .dark-modal { width: 100%; padding: 0; }.workspace-screen-layer .modal-close { top: -8px; right: -4px; } }
+
 /* Authentication is a dedicated screen, not a stacked dialog. */
 .auth-screen { position: fixed; inset: 0; z-index: 20; overflow-y: auto; background: #131514; color: #edf2ee; }
 .auth-screen-inner { width: min(100%, 560px); min-height: 100%; margin: 0 auto; padding: 28px 24px 56px; }
