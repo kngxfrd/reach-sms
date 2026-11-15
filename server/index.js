@@ -9,7 +9,12 @@ const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const distRoot = join(root, 'dist');
 const dataDir = join(root, 'data');
 await mkdir(dataDir, { recursive: true });
-const db = new DatabaseSync(join(dataDir, 'reach.sqlite'));
+// Keep one explicit, durable database location in every environment. A
+// relative path can silently point at a different database when the server is
+// started from another working directory (which makes existing accounts look
+// as if they disappeared).
+const dbPath = process.env.DB_PATH ? join(root, process.env.DB_PATH) : join(dataDir, 'reach.sqlite');
+const db = new DatabaseSync(dbPath);
 db.exec(`
   PRAGMA journal_mode = WAL;
   CREATE TABLE IF NOT EXISTS wallets (id INTEGER PRIMARY KEY, credits INTEGER NOT NULL DEFAULT 0, updated_at TEXT NOT NULL);
@@ -152,15 +157,45 @@ const authUser = (req) => { const token = req.headers.authorization?.replace('Be
 const wallet = (userId) => db.prepare('SELECT credits, updated_at as updatedAt FROM wallets WHERE user_id = ?').get(userId) || { credits: 0 };
 const ensureWallet = (userId) => { db.prepare("INSERT OR IGNORE INTO wallets (user_id, credits, updated_at) VALUES (?, 0, datetime('now'))").run(userId); return wallet(userId); };
 const passwordHash = (password) => { const salt = randomBytes(16).toString('hex'); return `${salt}:${scryptSync(password, salt, 64).toString('hex')}`; };
-const passwordMatches = (password, stored) => { if (stored === 'demo') return false; const [salt, hash] = stored.split(':'); return hash && timingSafeEqual(Buffer.from(hash, 'hex'), scryptSync(password, salt, 64)); };
+const passwordMatches = (password, stored) => {
+  if (!password || typeof stored !== 'string' || stored === 'demo') return false;
+  const [salt, hash] = stored.split(':');
+  if (!salt || !hash || hash.length !== 128 || !/^[0-9a-f]+$/i.test(hash)) return false;
+  try {
+    const expected = scryptSync(password, salt, 64);
+    const received = Buffer.from(hash, 'hex');
+    return received.length === expected.length && timingSafeEqual(received, expected);
+  } catch { return false; }
+};
 
 async function route(req, res) {
   if (req.method === 'OPTIONS') { res.writeHead(204, { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'Content-Type, Authorization', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS' }); return res.end(); }
   const url = new URL(req.url, 'http://localhost');
   try {
     if (req.method === 'GET' && url.pathname === '/api/health') return json(res, 200, { ok: true, service: 'reach-api' });
-    if (req.method === 'POST' && url.pathname === '/api/auth/signup') { const { name, email, password } = await body(req); if (!name || !email || !password || password.length < 6) return json(res, 400, { error: 'Name, email, and a password of at least 6 characters are required.' }); try { const result = db.prepare('INSERT INTO users (name, email, password_hash, created_at) VALUES (?, ?, ?, ?)').run(name.trim(), email.trim().toLowerCase(), passwordHash(password), now()); const userId = Number(result.lastInsertRowid); ensureWallet(userId); return json(res, 201, { token: String(userId), user: db.prepare('SELECT id, name, email FROM users WHERE id = ?').get(userId) }); } catch { return json(res, 409, { error: 'An account with that email already exists.' }); } }
-    if (req.method === 'POST' && url.pathname === '/api/auth/signin') { const { email, password } = await body(req); const user = db.prepare('SELECT id, name, email, password_hash as passwordHash FROM users WHERE email = ?').get(email?.trim().toLowerCase()); if (!user || !passwordMatches(password || '', user.passwordHash)) return json(res, 401, { error: 'Email or password is incorrect.' }); ensureWallet(user.id); return json(res, 200, { token: String(user.id), user: { id: user.id, name: user.name, email: user.email } }); }
+    if (req.method === 'POST' && url.pathname === '/api/auth/signup') {
+      const { name, email, password } = await body(req);
+      const cleanName = String(name || '').trim();
+      const cleanEmail = String(email || '').trim().toLowerCase();
+      if (!cleanName || !/^\S+@\S+\.\S+$/.test(cleanEmail) || typeof password !== 'string' || password.length < 6) return json(res, 400, { error: 'Enter a valid name, email, and a password of at least 6 characters.' });
+      try {
+        const result = db.prepare('INSERT INTO users (name, email, password_hash, created_at) VALUES (?, ?, ?, ?)').run(cleanName, cleanEmail, passwordHash(password), now());
+        const userId = Number(result.lastInsertRowid);
+        ensureWallet(userId);
+        return json(res, 201, { token: String(userId), user: db.prepare('SELECT id, name, email FROM users WHERE id = ?').get(userId) });
+      } catch (error) {
+        if (String(error?.message || '').toLowerCase().includes('unique')) return json(res, 409, { error: 'An account with that email already exists.' });
+        throw error;
+      }
+    }
+    if (req.method === 'POST' && url.pathname === '/api/auth/signin') {
+      const { email, password } = await body(req);
+      const cleanEmail = String(email || '').trim().toLowerCase();
+      const user = db.prepare('SELECT id, name, email, password_hash as passwordHash FROM users WHERE lower(email) = ?').get(cleanEmail);
+      if (!user || !passwordMatches(password, user.passwordHash)) return json(res, 401, { error: 'Email or password is incorrect.' });
+      ensureWallet(user.id);
+      return json(res, 200, { token: String(user.id), user: { id: user.id, name: user.name, email: user.email } });
+    }
     if (req.method === 'POST' && url.pathname === '/api/webhooks/sailup') {
       const raw = await rawBody(req);
       const secret = process.env.SAILUP_WEBHOOK_SECRET;

@@ -443,3 +443,182 @@ body { font-family: 'Inter', Arial, sans-serif; background: #100d14; color: #f7f
 .fold-reach-dot { display: inline-block; width: clamp(11px, 1.6vw, 22px); height: clamp(11px, 1.6vw, 22px); margin-left: -3px; margin-bottom: .06em; border-radius: 3px; background: #a855f7; box-shadow: 0 0 24px rgba(168,85,247,.35); }
 @media (prefers-reduced-motion: reduce) { .fold-piece { transform: none !important; opacity: 1 !important; } }
 @media (max-width: 700px) { .fold-reach-section { min-height: 220px; padding-bottom: 62px; }.fold-reach-lockup { gap: 6px; }.fold-reach-dot { border-radius: 2px; } }
+
+/* Final responsive pass: keep every surface inside the viewport and make the
+   workspace navigation usable on touch devices. */
+html, body, #root { width: 100%; min-width: 0; }
+html, body { overflow-x: hidden; }
+*, *::before, *::after { box-sizing: border-box; }
+img, video, canvas { max-width: 100%; height: auto; }
+.landing { overflow-x: clip; }
+.landing-nav, .landing-main { width: 100%; }
+.landing-nav .brand, .landing-actions, .topbar-actions { min-width: 0; }
+.landing-nav nav { flex: 0 1 auto; }
+.landing-actions { flex-shrink: 0; }
+.landing-main { grid-template-columns: minmax(0, 1fr) minmax(320px, .92fr); }
+.landing-copy, .landing-preview, .landing-pricing, .landing-story, .landing-infra, .landing-faq, .landing-value-band, .landing-cta-panel, .landing-detail-grid { min-width: 0; }
+.preview-window { max-width: 100%; }
+.table-scroll { max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; }
+.dark-table { min-width: 590px; }
+.mobile-nav-scrim, .mobile-nav-close { display: none; }
+
+@media (max-width: 1100px) {
+  .landing-main { column-gap: 42px; }
+  .workspace-page { padding-inline: 30px; }
+  .workspace-topbar { padding-inline: 30px; }
+  .contacts-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 900px) {
+  .landing-main { grid-template-columns: 1fr; min-height: auto; row-gap: 46px; padding-top: 60px; }
+  .landing-copy { max-width: 680px; }
+  .landing-preview { width: min(100%, 680px); justify-self: center; }
+  .landing-story, .landing-value-band { grid-template-columns: 1fr; gap: 28px; }
+  .story-steps, .infra-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .landing-cta-panel { align-items: flex-start; flex-direction: column; }
+  .landing-cta-panel .green-button { width: 100%; }
+  .billing-plan-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 700px) {
+  .landing-nav { height: 68px; padding-inline: 16px !important; gap: 12px; }
+  .landing-nav nav { display: none; }
+  .landing-nav .brand { font-size: 20px; }
+  .landing-actions { gap: 7px; }
+  .landing-actions .ghost-button { padding-inline: 4px; }
+  .landing-actions .green-button { min-height: 40px; padding-inline: 12px; }
+  .landing-main { display: grid; padding: 48px 16px 26px !important; row-gap: 40px; }
+  .landing-copy h1 { font-size: clamp(39px, 12vw, 58px) !important; line-height: 1.02; margin-top: 13px; }
+  .landing-copy > p:not(.eyebrow) { font-size: 13px; line-height: 1.65; }
+  .landing-cta { align-items: stretch; flex-direction: column; gap: 10px; }
+  .landing-cta > * { width: 100%; justify-content: center; }
+  .trust-row { flex-direction: column; gap: 9px; margin-top: 27px; }
+  .landing-preview { width: 100%; margin: 3px 0 0; }
+  .preview-window { transform: none; }
+  .preview-body { min-height: 240px; }
+  .preview-sidebar { width: 94px; padding-inline: 9px; gap: 11px; }
+  .preview-content { padding: 20px 14px; }
+  .preview-content h3 { font-size: 17px; margin-bottom: 14px; }
+  .preview-cards { gap: 7px; }
+  .preview-cards > div { padding: 9px; }
+  .preview-cards strong { font-size: 17px; }
+  .preview-chart { gap: 4px; height: 76px; }
+  .landing-pricing, .landing-story, .landing-infra, .landing-faq { padding-top: 48px; }
+  .pricing-cards, .story-steps, .infra-grid, .landing-detail-grid { grid-template-columns: 1fr; }
+  .pricing-card, .story-step, .infra-grid article, .landing-detail { min-height: 0; }
+  .landing-value-band { padding: 42px 0; }
+  .landing-cta-panel { padding: 24px 18px; }
+  .landing-bottom { align-items: flex-start; flex-direction: column; gap: 10px; margin-top: 46px; }
+
+  .workspace-sidebar { position: fixed; inset: 0 auto 0 0; z-index: 30; display: flex !important; width: min(86vw, 300px); min-width: 0; max-width: none; height: 100dvh; transform: translateX(-105%); visibility: hidden; overflow-y: auto; box-shadow: 18px 0 45px rgba(20, 12, 32, .22); transition: transform .2s ease, visibility .2s ease; }
+  .workspace-sidebar.mobile-open { transform: translateX(0); visibility: visible; }
+  .mobile-nav-scrim { position: fixed; inset: 0; z-index: 25; display: block; width: 100%; height: 100%; border: 0; background: rgba(15, 10, 23, .46); }
+  .mobile-nav-close { display: grid; place-items: center; width: 42px; height: 42px; margin-left: auto; color: inherit; background: transparent; border: 0; }
+  .workspace-sidebar .brand { display: flex; align-items: center; padding: 15px 14px 20px; }
+  .workspace-sidebar-bottom { display: flex !important; }
+  .workspace-main { width: 100%; margin-left: 0; }
+  .workspace-topbar { min-height: 66px; height: auto; padding: 10px 14px; gap: 8px; }
+  .mobile-menu { display: grid !important; place-items: center; flex: 0 0 44px; width: 44px; height: 44px; color: #f7f4fb; background: transparent; border: 0; border-radius: 8px; }
+  .mobile-menu:hover, .mobile-menu:focus-visible { background: rgba(168, 85, 247, .12); }
+  .workspace-title { display: none; }
+  .topbar-actions { flex: 1; justify-content: flex-end; gap: 6px; }
+  .credit-counter { min-width: 0; max-width: 142px; padding: 9px 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .buy-button { min-height: 40px; padding-inline: 11px; white-space: nowrap; }
+  .topbar-actions .icon-button { display: none; }
+  .workspace-page { width: 100%; max-width: none; padding: 26px 14px 44px; }
+  .page-title-row { align-items: stretch; flex-direction: column; gap: 14px; }
+  .page-title-row h1 { font-size: clamp(28px, 8vw, 36px) !important; line-height: 1.08; }
+  .page-title-row > .green-button, .button-row { width: 100%; }
+  .button-row { flex-wrap: wrap; }
+  .button-row > * { flex: 1 1 140px; justify-content: center; }
+  .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dark-stat { min-height: 116px; padding: 17px 15px; }
+  .dark-stat strong { font-size: 24px; margin: 9px 0 6px; }
+  .dark-stat span, .dark-stat small { font-size: 11px; }
+  .recent-panel, .full-panel { padding: 18px 14px; }
+  .panel-title-row { flex-wrap: wrap; gap: 10px; }
+  .panel-title-row .text-button { width: 100%; justify-content: flex-start; }
+  .message-toolbar { height: auto; min-height: 52px; flex-wrap: wrap; padding: 9px 12px; }
+  .message-toolbar input { order: 2; width: 100%; min-height: 30px; }
+  .message-toolbar span { order: 3; width: 100%; border-left: 0; padding: 5px 0 0; }
+  .billing-overview, .billing-plan-grid { grid-template-columns: 1fr; }
+  .billing-overview { margin-bottom: 30px; }
+  .billing-overview > div, .billing-plan-card { padding: 20px; }
+  .contacts-grid { grid-template-columns: 1fr; }
+  .contact-card { min-width: 0; }
+  .contact-card strong, .contact-card small { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dark-modal, .auth-modal { width: min(100%, 520px); max-height: calc(100dvh - 24px); margin: 12px 0; padding: 22px 17px; }
+  .campaign-modal { width: 100%; }
+  .modal-actions { flex-direction: column-reverse; }
+  .modal-actions > button { width: 100%; min-height: 44px; }
+  .recipient-tabs { grid-template-columns: 1fr; }
+  .send-choice { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 480px) {
+  .landing-nav .ghost-button { display: none; }
+  .landing-actions .green-button { min-height: 38px; font-size: 11px; }
+  .preview-sidebar { width: 78px; font-size: 8px; }
+  .preview-content { padding: 17px 10px; }
+  .preview-cards small { font-size: 7px; }
+  .stat-grid { grid-template-columns: 1fr; }
+  .dark-stat { min-height: 100px; }
+  .credit-counter { max-width: 112px; font-size: 10px; padding-inline: 8px; }
+  .buy-button { padding-inline: 9px; font-size: 11px; }
+  .workspace-page { padding-inline: 12px; }
+  .draft-card-actions { flex-direction: column-reverse; }
+  .draft-card-actions button { width: 100%; justify-content: center; }
+  .cost-row { align-items: flex-start; flex-direction: column; gap: 5px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workspace-sidebar { transition: none; }
+}
+
+/* Mobile finishing pass: respect safe areas, keep controls thumb-sized, and
+   prevent long campaign/contact forms from becoming wider than the viewport. */
+@media (max-width: 700px) {
+  .landing-nav { padding-top: env(safe-area-inset-top); }
+  .workspace-topbar { padding-top: max(10px, env(safe-area-inset-top)); }
+  .workspace-page { padding-bottom: max(44px, env(safe-area-inset-bottom)); }
+  .workspace-nav-item, .mobile-menu, .mobile-nav-close, .sidebar-logout,
+  .contact-menu-trigger, .modal-close, .toast button { min-width: 44px; min-height: 44px; }
+  .workspace-nav-item { display: flex; align-items: center; }
+  .topbar-actions { min-width: 0; }
+  .credit-counter, .buy-button { min-height: 44px; }
+  .credit-counter { flex: 1 1 auto; }
+  .buy-button { flex: 0 0 auto; }
+  .page-title-row > div:first-child { min-width: 0; }
+  .page-title-row > div:first-child p { max-width: 100%; overflow-wrap: anywhere; }
+  .campaign-modal .modal-body, .dark-modal form, .auth-modal form { min-width: 0; }
+  .campaign-modal input, .campaign-modal textarea, .campaign-modal select,
+  .dark-modal input, .dark-modal textarea, .dark-modal select,
+  .auth-modal input { width: 100%; max-width: 100%; min-width: 0; }
+  .campaign-modal textarea, .dark-modal textarea { min-height: 132px; }
+  .modal-backdrop { align-items: flex-start; padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom)); overflow-y: auto; }
+  .dark-modal, .auth-modal { max-height: none; overflow: visible; }
+  .toast { left: 12px; right: 12px; bottom: max(12px, env(safe-area-inset-bottom)); width: auto; max-width: none; }
+  .contact-card { grid-template-columns: auto minmax(0, 1fr) auto auto; gap: 10px; }
+  .contact-menu { position: relative; }
+  .contact-menu-popover { right: 0; left: auto; min-width: 128px; }
+  .table-scroll { margin-inline: -2px; scrollbar-width: thin; }
+}
+
+@media (max-width: 420px) {
+  .landing-nav .brand { font-size: 18px; }
+  .landing-actions .green-button { padding-inline: 10px; }
+  .workspace-topbar { padding-inline: 10px; }
+  .topbar-actions { gap: 5px; }
+  .credit-counter { max-width: none; font-size: 11px; }
+  .buy-button { font-size: 11px; }
+  .page-title-row h1 { font-size: 30px !important; }
+  .panel-title-row h2 { font-size: 18px; }
+  .dark-stat strong { font-size: 23px; }
+  .dark-modal, .auth-modal { padding-inline: 14px; }
+}
+
+/* The mobile close control is a button after the wordmark, so keep the dot
+   ordering explicit instead of relying on :last-child. */
+.workspace-sidebar .brand > span:last-of-type { order: 2; }
+.workspace-sidebar .brand > .sidebar-brand-dot { order: 3; }
+.workspace-sidebar .brand > .mobile-nav-close { order: 4; }
