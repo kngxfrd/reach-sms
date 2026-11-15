@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     allowedHosts: ['.trycloudflare.com'],
     proxy: {
-      '/api': 'http://localhost:3000',
+      '/api': process.env.VITE_API_URL || 'http://localhost:8000',
     },
   },
 });

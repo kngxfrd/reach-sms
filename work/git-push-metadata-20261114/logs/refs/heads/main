@@ -1,3 +1,9 @@
 0000000000000000000000000000000000000000 a7ba96100672bd8dab8ebd622e57b65c984e8494 kngxfrd <amekudzikingsford014@gmail.com> 1794403306 +0000	commit (initial): my first commit
 a7ba96100672bd8dab8ebd622e57b65c984e8494 74f9ff3c5b4532c8fe54d239b74e75fb980a2f00 kngxfrd <amekudzikingsford014@gmail.com> 1794658893 +0000	commit: Improve responsive layouts across devices
 74f9ff3c5b4532c8fe54d239b74e75fb980a2f00 883f8dbb6456d99c51657db1324d42a597df9c83 kngxfrd <amekudzikingsford014@gmail.com> 1794743111 +0000	commit: Fix persistent auth and mobile workspace layout
+883f8dbb6456d99c51657db1324d42a597df9c83 ae2b267d7402b024e81f95863319817e9e79dd55 kngxfrd <amekudzikingsford014@gmail.com> 1794750768 +0000	commit: Migrate API to Django and add SMS segment billing
+ae2b267d7402b024e81f95863319817e9e79dd55 718c8b6e283b6c36c3eabd304eb2daf80ee671ae kngxfrd <amekudzikingsford014@gmail.com> 1794750846 +0000	commit: Harden Django provider requests
+718c8b6e283b6c36c3eabd304eb2daf80ee671ae 92fdcec267111b9d7bf8b6a06c241ebda8e37b2f kngxfrd <amekudzikingsford014@gmail.com> 1794750870 +0000	commit: Document Django environment settings
+92fdcec267111b9d7bf8b6a06c241ebda8e37b2f c6b177941e4856d3906fb16eba6b50d1c842101c kngxfrd <amekudzikingsford014@gmail.com> 1794750903 +0000	commit: Keep bearer token compatibility for Django API
+c6b177941e4856d3906fb16eba6b50d1c842101c 799c80aa5f0d4a4732d2392f099d803b882a8016 kngxfrd <amekudzikingsford014@gmail.com> 1794753495 +0000	commit: Replace signed-in modals with workspace screens
+799c80aa5f0d4a4732d2392f099d803b882a8016 bc54781da000d9d35454e42b4a17a1a3088de750 kngxfrd <amekudzikingsford014@gmail.com> 1794754251 +0000	commit: Polish Reach frontend visual system
