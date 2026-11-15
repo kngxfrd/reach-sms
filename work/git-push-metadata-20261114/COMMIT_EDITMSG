@@ -1,1 +1,1 @@
-Install Django dependencies during Vercel build
+Use uv for Vercel Python dependencies
