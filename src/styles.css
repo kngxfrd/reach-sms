@@ -838,3 +838,22 @@ img, video, canvas { max-width: 100%; height: auto; }
 .workspace-sidebar .brand > span:last-of-type { order: 2; }
 .workspace-sidebar .brand > .sidebar-brand-dot { order: 3; }
 .workspace-sidebar .brand > .mobile-nav-close { order: 4; }
+
+/* Authentication is a dedicated screen, not a stacked dialog. */
+.auth-screen { position: fixed; inset: 0; z-index: 20; overflow-y: auto; background: #131514; color: #edf2ee; }
+.auth-screen-inner { width: min(100%, 560px); min-height: 100%; margin: 0 auto; padding: 28px 24px 56px; }
+.auth-screen-header { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.auth-brand { display: inline-flex; align-items: center; gap: 9px; color: #f4f7f4; background: transparent; font-family: 'Space Grotesk', sans-serif; font-size: 21px; font-weight: 700; }
+.auth-brand svg { width: 25px; height: 25px; }
+.auth-back { color: #a9b2ab; background: transparent; font-size: 12px; }
+.auth-back:hover, .auth-brand:hover { color: var(--green-accent); }
+.auth-panel { width: 100%; max-width: 480px; margin: 13vh auto 0; padding: 0; }
+.auth-panel h2 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(30px, 6vw, 42px); letter-spacing: -1.5px; line-height: 1.08; margin: 9px 0 11px; }
+.auth-panel .auth-subtitle { max-width: 390px; font-size: 14px; line-height: 1.6; margin-bottom: 30px; }
+.auth-panel label { display: block; color: #acb6ae; font-size: 12px; font-weight: 600; margin: 17px 0 0; }
+.auth-panel input { display: block; width: 100%; margin-top: 8px; border: 1px solid #3b433e; border-radius: 7px; padding: 14px; background: #1a1d1b; color: #eff4f0; outline: 0; font-size: 13px; }
+.auth-panel input:focus { border-color: var(--green-accent); box-shadow: 0 0 0 3px rgba(67, 211, 145, .12); }
+.auth-panel .green-button { margin-top: 26px; min-height: 48px; }
+.auth-switch { text-align: left; color: #8f9991; font-size: 12px; margin: 22px 0 0; }
+.auth-switch button { color: var(--green-accent); background: none; font-weight: 700; }
+@media (max-width: 700px) { .auth-screen-inner { padding: 20px 18px 40px; }.auth-panel { margin-top: 18vh; }.auth-panel h2 { font-size: 34px; } }
