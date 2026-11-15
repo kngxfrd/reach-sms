@@ -8,11 +8,12 @@ const notifyLoading = (delta) => {
   pendingRequests = Math.max(0, pendingRequests + delta);
   if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('reach:loading', { detail: pendingRequests > 0 }));
 };
+const API_BASE = import.meta.env.VITE_API_URL || '';
 const api = (path, options = {}) => {
   const { silent, ...fetchOptions } = options;
   const trackProgress = !silent;
   if (trackProgress) notifyLoading(1);
-  return fetch(path, { ...fetchOptions, headers: { 'Content-Type': 'application/json', ...(fetchOptions.headers || {}) } }).then(async (response) => {
+  return fetch(`${API_BASE}${path}`, { ...fetchOptions, headers: { 'Content-Type': 'application/json', ...(fetchOptions.headers || {}) } }).then(async (response) => {
   const contentType = response.headers.get('content-type') || '';
   const raw = await response.text();
   let data = {};
