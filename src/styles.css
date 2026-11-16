@@ -213,6 +213,29 @@ html, body, #root { width: 100%; max-width: 100%; overflow-x: hidden; }
   .sender-table-head span:last-child, .sender-table-row time { display: none; }
 }
 
+/* Compact mobile top bar: keep credits, purchase, and notifications reachable
+   without letting any control force horizontal scrolling. */
+@media (max-width: 700px) {
+  .workspace-topbar .topbar-actions { display: flex; align-items: center; gap: 5px; }
+  .workspace-topbar .credit-counter,
+  .workspace-topbar .buy-button { min-height: 38px; height: 38px; border-radius: 8px; font-size: 11px; line-height: 1; }
+  .workspace-topbar .credit-counter { flex: 1 1 auto; max-width: none; min-width: 0; padding: 7px 8px; }
+  .workspace-topbar .buy-button { flex: 0 1 auto; padding: 7px 9px; }
+  .workspace-topbar .notification-trigger { display: grid !important; place-items: center; flex: 0 0 38px; width: 38px; min-width: 38px; height: 38px; min-height: 38px; padding: 0; }
+  .workspace-topbar .notification-trigger svg { width: 17px; height: 17px; }
+  .notification-trigger[aria-expanded="true"] .notification-dot { display: none; }
+  .notifications-dropdown { right: -4px; width: min(92vw, 340px); max-height: min(60dvh, 420px); overflow-y: auto; }
+  .green-button, .outline-button { min-height: 42px; }
+  .page-title-row .green-button, .button-row .green-button, .button-row .outline-button { min-height: 42px; }
+}
+@media (max-width: 420px) {
+  .workspace-topbar { padding-inline: 9px; gap: 5px; }
+  .mobile-menu { flex-basis: 38px; width: 38px; height: 38px; }
+  .workspace-topbar .credit-counter { font-size: 10px; padding-inline: 6px; }
+  .workspace-topbar .buy-button { font-size: 10px; padding-inline: 7px; }
+  .workspace-topbar .buy-button svg { width: 14px; height: 14px; }
+}
+
 /* Keep every dashboard page close to the shared topbar. */
 .workspace-page { padding-top: 28px !important; }
 @media (max-width: 700px) { .workspace-page { padding-top: 20px !important; } }
@@ -943,3 +966,23 @@ select:focus-visible { outline-color: var(--reach-purple); }
 .auth-switch { text-align: left; color: #8f9991; font-size: 12px; margin: 22px 0 0; }
 .auth-switch button { color: var(--green-accent); background: none; font-weight: 700; }
 @media (max-width: 700px) { .auth-screen-inner { padding: 20px 18px 40px; }.auth-panel { margin-top: 18vh; }.auth-panel h2 { font-size: 34px; } }
+
+/* Final mobile control sizing and notification visibility overrides. */
+@media (max-width: 700px) {
+  .workspace-topbar .topbar-actions { display: flex; align-items: center; gap: 5px; }
+  .workspace-topbar .topbar-actions .icon-button.notification-trigger { display: grid !important; place-items: center; flex: 0 0 38px; width: 38px; min-width: 38px; height: 38px; min-height: 38px; padding: 0; }
+  .workspace-topbar .credit-counter, .workspace-topbar .buy-button { min-height: 38px; height: 38px; border-radius: 8px; font-size: 11px; line-height: 1; }
+  .workspace-topbar .credit-counter { flex: 1 1 auto; max-width: none; min-width: 0; padding: 7px 8px; }
+  .workspace-topbar .buy-button { flex: 0 1 auto; padding: 7px 9px; white-space: nowrap; }
+  .workspace-topbar .notification-trigger svg { width: 17px; height: 17px; }
+  .notification-trigger[aria-expanded="true"] .notification-dot { display: none; }
+  .notifications-dropdown { right: 14px; width: min(92vw, 340px); max-height: min(60dvh, 420px); overflow-y: auto; }
+  .green-button, .outline-button { min-height: 42px; }
+}
+@media (max-width: 420px) {
+  .workspace-topbar { padding-inline: 9px; gap: 5px; }
+  .mobile-menu { flex-basis: 38px; width: 38px; height: 38px; }
+  .workspace-topbar .credit-counter { font-size: 10px; padding-inline: 6px; }
+  .workspace-topbar .buy-button { font-size: 10px; padding-inline: 7px; }
+  .workspace-topbar .buy-button svg { width: 14px; height: 14px; }
+}
